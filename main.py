@@ -7,15 +7,14 @@ def is_float(string):
         return False
 #This function will present the data in a nice manner preferably a graph or chart of sorts
 def showData(amountDict, depositDict):
-    expenseNum, expenseLabel = zip(*amountDict.items())
-    depositNum, depositLabel = zip(*depositDict.items())
-    deposit, expense = plt
+    expenseLabel, expenseNum = zip(*amountDict.items())
+    depositLabel, depositNum = zip(*depositDict.items())
 
 
-    expense.pie(expenseNum, labels = expenseLabel)
-    deposit.pie(depositNum, labels = depositLabel)
-    expense.show()
-    deposit.show()
+    plt.pie(expenseNum, labels = expenseLabel)
+    plt.show()
+    plt.pie(depositNum, labels = depositLabel)
+    plt.show()
 
 #This function will collect the expense
 def withdraw(amountDict):
