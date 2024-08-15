@@ -46,12 +46,12 @@ def showData(amountDict, depositDict):
             expenseLabel[j] = f"{expenseLabel[j]}: {expenseNum[j]/totalExpense *100:.1f}%"
         # Plotting the pie chart for expenses
         ax1.pie(expenseNum, startangle=140)
-        ax1.set_title('Expenses: ${totalExpense}')
+        ax1.set_title(f'Expenses: ${totalExpense}')
         ax1.legend(expenseLabel, loc="best")
 
         # Plotting the pie chart for deposits
         ax2.pie(depositNum, startangle=140)
-        ax2.set_title('Income: ${totalDeposit}')
+        ax2.set_title(f'Income: ${totalDeposit}')
         ax2.legend(depositLabel, title="Income", loc="best")
         plt.tight_layout()
         plt.show()
@@ -102,10 +102,53 @@ def showData(amountDict, depositDict):
         plt.show()
             
 def saveData(amountDict, depositDict):
-    with open('day_one.csv') as csvfile:
+    print("\nSaving Data . . . ")
+    
+    # Prepare labels
+    headersAmount = []
+    headersDeposit = []
+    itemsList = []
+    maxLengthDep = 0
+    maxLengthExp = 0
+    for i, item in enumerate(amountDict):
+        itemsList.append(list(item.catalog.keys()))
+        itemsList.append(list(item.catalog.values()))
+        maxLengthExp = max(maxLengthExp, len(item.catalog))
+        headersAmount.append([f'{item.name}: Key'])
+        headersAmount.append([f'{item.name}: Num'])
+    for j, jtem in enumerate(depositDict):
+        itemsList.append(list(jtem.catalog.keys()))
+        itemsList.append(list(jtem.catalog.values()))
+        maxLengthDep = max(maxLengthDep, len(item.catalog))
+        headersDeposit.append([f'{jtem.name}: Key'])
+        headersDeposit.append([f'{jtem.name}: Num'])
+    # Write labels to CSV file
+    with open('day_one_expense.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerows(amountDict)
-        writer.writerows(depositDict)
+        writer.writerow(headersAmount)
+        for i in range(maxLengthExp):
+            row = []
+            for j in range(10):
+                if len(amountDict[j].catalog) > i:
+                    row.append(list(amountDict[j].catalog.keys())[i])
+                    row.append(list(amountDict[j].catalog.values())[i])
+                else:
+                    row.append("NaNa")
+                    row.append(0)
+            writer.writerow(row)
+    with open('day_one_deposit.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(headersDeposit)
+        for i in range(maxLengthDep):
+            row = []
+            for j in range(6):
+                if len(depositDict[j].catalog) > i:
+                    row.append(list(depositDict[j].catalog.keys())[i])
+                    row.append(list(depositDict[j].catalog.values())[i])
+                else:
+                    row.append("NaNa")
+                    row.append(0)
+            writer.writerow(row)
 #This function will collect the expense
 def withdraw(amountDict):
     while True:
@@ -190,6 +233,6 @@ def main():
                 print("Please only type Y or N")
         if(choice == 'Y'):
             break
+    saveData(expenseDict, depositDict)
     showData(expenseDict, depositDict)
-    #saveData(expenseDict, depositDict)
 main()
