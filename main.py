@@ -1,5 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+#each individual category is give by this it will have a catalog, a name, and a total cost
+class Category:
+    def __init__(self, name):
+        self.name = name
+        self.catalog = {}
+        self.total = 0   
 def is_float(string):
     if string.replace(".","").isnumeric():
         return True
@@ -9,17 +15,24 @@ def is_float(string):
 def showData(amountDict, depositDict):
     expenseLabel, expenseNum = zip(*amountDict.items())
     depositLabel, depositNum = zip(*depositDict.items())
-
-
-    plt.pie(expenseNum, labels = expenseLabel)
-    plt.show()
-    plt.pie(depositNum, labels = depositLabel)
+    fig, (ax1, ax2) = plt.subplots(1,2,figsize=(10,10))
+    ax1.pie(expenseNum, labels = expenseLabel)
+    ax1.set_title('Expenses')
+    ax2.pie(depositNum, labels = depositLabel)
+    ax2.set_title('Income')
     plt.show()
 
 #This function will collect the expense
 def withdraw(amountDict):
     while True:
-        amount = input("How much did it cost? \nHow: ")
+        print("\nDeposit Categories:\n")
+        for index, item in enumerate(amountDict):
+            print(f'{index}. {item.name}')
+        category = input("\nPlease enter the number corresponding to the category\n")
+        if(not is_float(category) or int(category) >= len(amountDict)):
+            print("Please enter a number")
+            continue
+        amount = input("How much did it cost? \nAmount: ")
         reason = input("What was it? \nWhat: ")
         if(reason.isalpha() and is_float(amount)):
             if(amountDict.get(str(reason.lower())) == None):
@@ -29,32 +42,45 @@ def withdraw(amountDict):
                 amountDict[str(reason.lower())] = float(newAmount)
             break
         else:
-            print("Please make sure the What is all alphabets and How is only number")
+            print("Please make sure the What is all alphabets and Amount is only number")
             continue
     return amountDict
 #This function will remove an expense
 def deposit(depositDict):
     while True:
-        amount = input("How much did you add to the account?\nHow: ")
-        reason = input("Who is providing this deposit?\nWho: ")
+        print("\nDeposit Categories:\n")
+        for index, item in enumerate(depositDict):
+            print(f'{index}. {item.name}')
+        category = input("\nPlease enter the number corresponding to the category\n")
+        if(not is_float(category) or int(category) >= len(depositDict)):
+            print("Please enter a number")
+            continue
+        amount = input("\nHow much did you add to the account?\nAmount: ")
+        reason = input("\nWho is providing this deposit?\nSource: ")
         if(reason.isalpha() and is_float(amount)):
-            if(depositDict.get(str(reason.lower())) == None):
-                depositDict[str(reason.lower())] = float(amount)
+            if(depositDict[int(category)].catalog.get(str(reason.lower())) == None):
+                depositDict[int(category)].catalog[str(reason.lower())] = float(amount)
             else:
-                newAmount = depositDict.get(str(reason.lower())) + float(amount)
-                depositDict[str(reason.lower())] = float(newAmount)
+                newAmount = depositDict[int(category)].catalog.get(str(reason.lower())) + float(amount)
+                depositDict[int(category)].catalog[str(reason.lower())] = float(newAmount)
             break
         else:
-            print("Please make sure the Who is all alphabets and How is only number")
+            print("Please make sure the Source is all alphabets and Amount is only a number")
             continue
     return depositDict
 def main():
-    expenseDict = {}
-    depositDict = {}
+    expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
+    depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
+    expenseDict = []
+    depositDict = []
+    for i in expensesCategory:
+        expenseDict.append(Category(i))
+    for j in depositCategory:
+        depositDict.append(Category(j))
     while True:
         #loop for making sure that we get correct response
         while True:
-            choice = input("Would you like to make a deposit?: Y or N\n")
+            choice = input("\nWould you like to make a deposit?: Y or N\n")
             if(choice == 'Y' or choice == 'N'):
                 break
             else:
@@ -64,7 +90,7 @@ def main():
         #loop for making sure that we get correct response
         choice = 'SAD'
         while True:
-            choice = input("Would you like to add a expense?: Y or N\n")
+            choice = input("\nWould you like to add a expense?: Y or N\n")
             if(choice == 'Y' or choice == 'N'):
                 break
             else:
@@ -73,7 +99,7 @@ def main():
             expenseDict = withdraw(expenseDict)
         choice = 'SAD'
         while True:
-            choice = input("Are you all done?: Y or N\n")
+            choice = input("\nAre you all done?: Y or N\n")
             if(choice == 'Y' or choice == 'N'):
                 break
             else:
