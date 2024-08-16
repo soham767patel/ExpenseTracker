@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import os.path
+from tkinter import *
 #each individual category is give by this it will have a catalog, a name, and a total cost
 class Category:
     def __init__(self, name):
@@ -53,7 +54,7 @@ def showData(amountDict, depositDict):
         # Plotting the pie chart for expenses
         ax1.pie(expenseNum, startangle=140)
         ax1.set_title(f'Expenses: ${totalExpense}')
-        ax1.legend(expenseLabel, loc="best")
+        ax1.legend(expenseLabel,title="Expense", loc="best")
 
         # Plotting the pie chart for deposits
         ax2.pie(depositNum, startangle=140)
@@ -293,4 +294,12 @@ def main():
             break
     saveData(expenseDict, depositDict, date)
     showData(expenseDict, depositDict)
-main()
+def test():
+    root = Tk()
+    #Creating label widgit
+    myLabel = Label(root, text = "Hello World!")
+    #Shoving it onto the screen
+    myLabel.pack()
+
+    root.mainloop()
+test()
