@@ -156,7 +156,15 @@ def saveData(amountDict, depositDict, currDate):
                     row.append(0)
             writer.writerow(row)
 #This function will collect the expense
-def inputMode(date, expenseDict, depositDict):
+def inputMode(date):
+    expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
+    depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
+    expenseDict = []
+    depositDict = []
+    for i in expensesCategory:
+        expenseDict.append(Category(i))
+    for j in depositCategory:
+        depositDict.append(Category(j))
     currentDirectory = os.getcwd()
     currentPathExpense = currentDirectory + f'/{date}_expense.csv'
     currentPathDeposit = currentDirectory + f'/{date}_deposit.csv'
@@ -175,7 +183,9 @@ def inputMode(date, expenseDict, depositDict):
                             depositDict[int(i/2)].catalog[row[i]] = float(row[i+1])
                         else:
                             newAmount = depositDict[i/2].catalog.get(row[i]) + float(row[i+1])
-                            depositDict[int(i/2)].catalog[row[i]] = float(newAmount) 
+                            depositDict[int(i/2)].catalog[row[i]] = float(newAmount)
+            for k in range(0,6,1):
+                depositDict[int(k)].addition()
     else:
         print(f'{date} deposit file does not exist . . . not uploading . . . \n')
     if os.path.exists(currentPathExpense):
@@ -194,6 +204,8 @@ def inputMode(date, expenseDict, depositDict):
                         else:
                             newAmount = expenseDict[int(i/2)].catalog.get(row[i]) + float(row[i+1])
                             expenseDict[int(i/2)].catalog[row[i]] = float(newAmount) 
+            for j in range(0,10,1):
+                expenseDict[int(j)].addition()
     else:
         print(f'{date} expense file does not exist . . . not uploading . . . \n')
     return expenseDict, depositDict
@@ -244,54 +256,3 @@ def deposit(depositDict):
             print("Please make sure the Source is all alphabets and Amount is only a number")
             continue
     return depositDict
-def main():
-    expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
-    depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
-    expenseDict = []
-    depositDict = []
-    date = ''
-    while True: 
-        print("\nWhat is today's date?\n")
-        date = input("In YYYYMMDD Format: ")
-        if(len(date) == 8 and date.isnumeric()):
-            break
-        else:
-            "Please enter only numbers in YYYYMMDD Format!"
-            continue
-    for i in expensesCategory:
-        expenseDict.append(Category(i))
-    for j in depositCategory:
-        depositDict.append(Category(j))
-    expenseDict, depositDict = inputMode(date, expenseDict, depositDict)
-    while True:
-        #loop for making sure that we get correct response
-        while True:
-            choice = input("\nWould you like to make a deposit?: Y or N\n")
-            if(choice == 'Y' or choice == 'N'):
-                break
-            else:
-                print("Please only type Y or N")
-        if(choice == "Y"):
-            depositDict = deposit(depositDict)
-        #loop for making sure that we get correct response
-        choice = 'SAD'
-        while True:
-            choice = input("\nWould you like to add a expense?: Y or N\n")
-            if(choice == 'Y' or choice == 'N'):
-                break
-            else:
-                print("Please only type Y or N")
-        if(choice == 'Y'):
-            expenseDict = withdraw(expenseDict)
-        choice = 'SAD'
-        while True:
-            choice = input("\nAre you all done?: Y or N\n")
-            if(choice == 'Y' or choice == 'N'):
-                break
-            else:
-                print("Please only type Y or N")
-        if(choice == 'Y'):
-            break
-    saveData(expenseDict, depositDict, date)
-    showData(expenseDict, depositDict)
-main()
