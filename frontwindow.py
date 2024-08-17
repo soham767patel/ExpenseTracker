@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from dataCollection import inputMode, is_float, is_alphabet
+from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData
 import datetime
 class SampleApp(tk.Tk):
     def __init__(self):
@@ -19,13 +19,15 @@ class SampleApp(tk.Tk):
         self._frame.pack()
         self.update_idletasks()
 class StartPage(tk.Frame):
-    def __init__(self, master, expenseDict, depositDict):
+    def __init__(self, master, expense, income, date):
+        self.counter = 0
         super().__init__(master)
-        
+        self.expense2 = expense
+        self.deposit2 = income
         # Create and pack the label
         tk.Label(self, text="Expenses and Income:").grid(row = 0, column = 0)
-        
-        tk.Label(self, text="SubCategory:").grid(row = 0, column = 1)
+        self.counter_label = tk.Label(self, text=f'Submits Made: {self.counter}')
+        self.counter_label.grid(row=0, column=1)
         # Create StringVar for the main dropdown menu
         self.selected_option = tk.StringVar()
         self.selected_option.set("Deposit")  # default value
@@ -55,9 +57,9 @@ class StartPage(tk.Frame):
         self.deposit_menu.grid(row=1, column=1)
         # Button to switch to the ResultPage
         tk.Button(self, text="Open ResultPage",
-                  command=lambda: master.switch_frame(ResultPage)).grid(row=4, column = 1)
+                  command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(row=4, column = 1)
         tk.Button(self, text="Submit",
-                  command=lambda: self.submit).grid(row=4, column = 0)
+                  command=lambda: self.submit(self.expense2, self.deposit2)).grid(row=4, column = 0)
         self.entry1 = tk.Entry(self, fg="grey")
         self.placeholder_text = "Source"
         self.entry1.insert(0, self.placeholder_text)
@@ -99,8 +101,31 @@ class StartPage(tk.Frame):
         elif selection == "Withdraw":
             self.expenses_menu.grid(row=1, column=1)
             self.deposit_menu.grid_forget()
-    def submit(self):
-        pass
+    def submit(self, expense, income):
+        source = self.entry1.get()
+        value = self.entry2.get()
+        expensesDict = {"Housing": 0, "Transportation": 1, "Healthcare": 2, "Education": 3, "Entertainment and Leisure": 4,"Personal Care": 5,"Clothing":6,"Insurance":7,"Taxes":8,"Miscellaneous":9}
+        depositDict = {"Employment Income":0, "Self-Employment Income":1,"Investment Income":2,"Rental Income":3,"Government Assistance":4,"Other Income":5}
+        if self.selected_option.get() == "Deposit":
+            category = depositDict.get(self.deposit_var.get())
+        else:
+            category = expensesDict.get(self.expenses_var.get())
+        if not is_alphabet(source):
+            tk.messagebox.showerror("Invalid Input", "Please enter a valid source only letters and spaces allowed")
+        elif not is_float(value):
+            tk.messagebox.showerror("Invalid Input", "Please enter a valid amount of money")
+        else:
+            if self.selected_option == "Deposit":
+                self.deposit2 = deposit(income, category, source, value)
+                self.counter+=1
+                self.entry1.delete(0, tk.END)
+                self.entry2.delete(0, tk.END)
+            else:
+                self.expense2 = withdraw(expense, category, source, value)
+                self.counter+=1
+                self.entry1.delete(0, tk.END)
+                self.entry2.delete(0, tk.END)
+            self.counter_label.config(text=f'Submits Made: {self.counter}')
 class EnterPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
@@ -137,10 +162,10 @@ class EnterPage(tk.Frame):
             self.entry.config(fg='grey')  # Set placeholder color to grey
     
     def submit(self):
-        data = self.entry.get()
-        if self.is_valid_date(data):
-            expense, deposit = inputMode(data)
-            self.master.switch_frame(StartPage, expense, deposit)    
+        date = self.entry.get()
+        if self.is_valid_date(date):
+            expense, income = inputMode(date)
+            self.master.switch_frame(StartPage, expense, income, date)    
         else:
             tk.messagebox.showerror("Invalid Input", "Please enter a valid date in YYYYMMDD format.")
     def is_valid_date(self, date_str):
@@ -152,7 +177,8 @@ class EnterPage(tk.Frame):
 
 
 class ResultPage(tk.Frame):
-    def __init__(self, master, data=None):
+    def __init__(self, master, expense2, deposit2, date):
+        saveData(expense2, deposit2, date)
         tk.Frame.__init__(self, master)
         tk.Label(self, text="This is ResultPage").pack(side="top", fill="x", pady=10)
         tk.Button(self, text="Day's Results").pack()

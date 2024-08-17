@@ -209,50 +209,19 @@ def inputMode(date):
     else:
         print(f'{date} expense file does not exist . . . not uploading . . . \n')
     return expenseDict, depositDict
-def withdraw(amountDict):
-    while True:
-        print("\nExpenses Categories:\n")
-        for index, item in enumerate(amountDict):
-            print(f'{index}. {item.name}')
-        category = input("\nPlease enter the number corresponding to the category\n")
-        if(not is_float(category) or int(category) >= len(amountDict)):
-            print("Please enter a number")
-            continue
-        amount = input("How much did it cost? \nAmount: ")
-        reason = input("What was it? \nWhat: ")
-        if(is_alphabet(reason) and is_float(amount)):
-            if(amountDict[int(category)].catalog.get(str(reason.lower())) == None):
-                amountDict[int(category)].catalog[str(reason.lower())] = float(amount)
-            else:
-                newAmount = amountDict[int(category)].catalog.get(str(reason.lower())) + float(amount)
-                amountDict[int(category)].catalog[str(reason.lower())] = float(newAmount)
-            break
-        else:
-            print("Please make sure the What is all alphabets and Amount is only number")
-            continue
+def withdraw(amountDict, index, reason, amount):
+    if(amountDict[int(index)].catalog.get(str(reason.lower())) == None):
+        amountDict[int(index)].catalog[str(reason.lower())] = float(amount)
+    else:
+        newAmount = amountDict[int(index)].catalog.get(str(reason.lower())) + float(amount)
+        amountDict[int(index)].catalog[str(reason.lower())] = float(newAmount)
+
     return amountDict
 #This function will remove an expense
-def deposit(depositDict):
-    while True:
-        print("\nDeposit Categories:\n")
-        for index, item in enumerate(depositDict):
-            print(f'{index}. {item.name}')
-        category = input("\nPlease enter the number corresponding to the category OR (Type L) to Exit Depositing\n")
-        if category.lower() == 'l':
-            "\nAll done with Income . . .\n"
-            break
-        if(not is_float(category) or int(category) >= len(depositDict)):
-            print("Please enter a number")
-            continue
-        amount = input("\nHow much did you add to the account?\nAmount: ")
-        reason = input("\nWho is providing this deposit?\nSource: ")
-        if(is_alphabet(reason) and is_float(amount)):
-            if(depositDict[int(category)].catalog.get(str(reason.lower())) == None):
-                depositDict[int(category)].catalog[str(reason.lower())] = float(amount)
-            else:
-                newAmount = depositDict[int(category)].catalog.get(str(reason.lower())) + float(amount)
-                depositDict[int(category)].catalog[str(reason.lower())] = float(newAmount)
-        else:
-            print("Please make sure the Source is all alphabets and Amount is only a number")
-            continue
+def deposit(depositDict, index, reason, amount):
+    if(depositDict[int(index)].catalog.get(str(reason.lower())) == None):
+        depositDict[int(index)].catalog[str(reason.lower())] = float(amount)
+    else:
+        newAmount = depositDict[int(index)].catalog.get(str(reason.lower())) + float(amount)
+        depositDict[int(index)].catalog[str(reason.lower())] = float(newAmount)
     return depositDict
