@@ -125,6 +125,7 @@ class StartPage(tk.Frame):
                 self.entry1.delete(0, tk.END)
                 self.entry2.delete(0, tk.END)
             self.counter_label.config(text=f'Submits Made: {self.counter}')
+            
 class EnterPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
