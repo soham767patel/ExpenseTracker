@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData, showDataDay
+from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData, showDataDay, showDataMonth, showDataYear
 import datetime
 import sv_ttk
 import darkdetect
@@ -124,8 +124,7 @@ class StartPage(tk.Frame):
                 self.counter+=1
                 self.entry1.delete(0, tk.END)
                 self.entry2.delete(0, tk.END)
-            self.counter_label.config(text=f'Submits Made: {self.counter}')
-            
+            self.counter_label.config(text=f'Submits Made: {self.counter}')           
 class EnterPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
@@ -176,8 +175,6 @@ class EnterPage(tk.Frame):
             return True
         except ValueError:
             return False
-
-
 class ResultPage(tk.Frame):
     def __init__(self, master, expense2, deposit2, date):
         saveData(expense2, deposit2, date)
@@ -186,9 +183,32 @@ class ResultPage(tk.Frame):
         date_obj = datetime.datetime.strptime(date_str, "%Y%m%d")
         currDate = date_obj.strftime("%Y-%m-%d")
         tk.Label(self, text=f"Today's Date: {currDate}").pack(side="top", fill="x", pady=10)
-        tk.Button(self, text="Day's Results", command=lambda: showDataDay(expense2, deposit2)).pack()
-        tk.Button(self, text="Categories's Results").pack()
+        tk.Button(self, text="Day's Results", command=lambda: showDataDay(expense2, deposit2, date)).pack()
+        tk.Button(self, text="Deposit's Results", command=lambda: master.switch_frame(DepositResultPage,date,expense2,deposit2)).pack()
+        tk.Button(self, text="Expense's Results", command=lambda: master.switch_frame(ExpenseResultPage,date,expense2,deposit2)).pack()
+        tk.Button(self, text="Month's Results", command=lambda: showDataMonth(date)).pack()
+        tk.Button(self, text="Years's Results", command=lambda: showDataYear(date)).pack()
         tk.Button(self, text="Exit Program", command = self.quit).pack(side="bottom", fill= "x", pady=10)
+class DepositResultPage(tk.Frame):
+    def __init__(self, master, date, expense, deposit):
+        self.expense2 = expense
+        self.deposit2 = deposit
+        tk.Frame.__init__(self, master)
+        depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
+        tk.Label(self, text=f"Deposit Results: {date}").pack(side="top", fill="x", pady=10)
+        for i, item in enumerate(depositCategory):
+            tk.Button(self, text=f'{depositCategory[i]}', command=lambda num=i: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1)).pack()
+        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).pack()
+class ExpenseResultPage(tk.Frame):
+    def __init__(self, master, date, expense, deposit):
+        tk.Frame.__init__(self, master)
+        self.expense2 = expense
+        self.deposit2 = deposit
+        expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
+        tk.Label(self, text=f"Expense Results; {date}").pack(side="top", fill="x", pady=10)
+        for j, jtem in enumerate(expensesCategory):
+            tk.Button(self, text=f'{expensesCategory[j]}', command=lambda num=j: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2)).pack()
+        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).pack()
 if __name__ == "__main__":
     app = SampleApp()
     app.update_idletasks()
