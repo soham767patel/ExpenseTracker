@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData
 import datetime
+import sv_ttk
+import darkdetect
 class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -60,28 +62,26 @@ class StartPage(tk.Frame):
                   command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(row=4, column = 1)
         tk.Button(self, text="Submit",
                   command=lambda: self.submit(self.expense2, self.deposit2)).grid(row=4, column = 0)
-        self.entry1 = tk.Entry(self, fg="grey")
+        self.entry1 = tk.Entry(self)
         self.placeholder_text = "Source"
         self.entry1.insert(0, self.placeholder_text)
         self.entry1.grid(row=3, column=0)
 
-        self.entry2 = tk.Entry(self, fg="grey")
+        self.entry2 = tk.Entry(self)
         self.placeholder_text2 = "Value"
         self.entry2.insert(0, self.placeholder_text2)
         self.entry2.grid(row=3, column=1)
-
         self.entry1.bind("<FocusIn>", self.clear_placeholder)
         self.entry1.bind("<FocusOut>", self.set_placeholder)
-
+        
         self.entry2.bind("<FocusIn>", self.clear_placeholder)
         self.entry2.bind("<FocusOut>", self.set_placeholder)
 
     def clear_placeholder(self, event):
         entry = event.widget
-        """Clear placeholder text when the entry gets focus."""
+    
         if entry.get() == self.placeholder_text or entry.get() == self.placeholder_text2:
             entry.delete(0, tk.END)
-            entry.config(fg='black')  # Set text color to black for user input
     
     def set_placeholder(self, event):
         entry = event.widget
@@ -90,7 +90,6 @@ class StartPage(tk.Frame):
                 entry.insert(0, self.placeholder_text)
             else:
                 entry.insert(0, self.placeholder_text2)
-            entry.config(fg="grey")
     def update_categories(self, *args):
         selection = self.selected_option.get()
         
@@ -115,7 +114,7 @@ class StartPage(tk.Frame):
         elif not is_float(value):
             tk.messagebox.showerror("Invalid Input", "Please enter a valid amount of money")
         else:
-            if self.selected_option == "Deposit":
+            if self.selected_option.get() == "Deposit":
                 self.deposit2 = deposit(income, category, source, value)
                 self.counter+=1
                 self.entry1.delete(0, tk.END)
@@ -129,45 +128,47 @@ class StartPage(tk.Frame):
 class EnterPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        
+
         # Label above the entry box
-        tk.Label(self, text="Enter the Date in YYYYMMDD:").pack(side="top", fill="x", pady=10)
-        
+        top_label = tk.Label(self, text="Enter the Date in YYYYMMDD:")
+        top_label.pack(side="top", fill="x", pady=10)
+
         # Entry widget with placeholder text
-        self.entry = tk.Entry(self)
+        self.entry1 = tk.Entry(self)
         self.placeholder_text = "YYYYMMDD"
-        self.entry.insert(0, self.placeholder_text)
-        self.entry.pack(pady=5)
-        
-        # Set placeholder text color to grey
-        self.entry.config(fg='grey')
-        
+        self.entry1.insert(0, self.placeholder_text)
+        self.entry1.pack(pady=5)
+
         # Bind events for clearing and resetting placeholder text
-        self.entry.bind("<FocusIn>", self.clear_placeholder)
-        self.entry.bind("<FocusOut>", self.set_placeholder)
-        
+        self.entry1.bind("<FocusIn>", self.clear_placeholder)
+        self.entry1.bind("<FocusOut>", self.set_placeholder)
+
         # Submit button
-        tk.Button(self, text="Submit", command=self.submit).pack(pady=10)
-    
+        self.entry2 = tk.Button(self, text="Submit", command=self.submit)
+        self.entry2.pack(pady=10)
+
     def clear_placeholder(self, event):
         """Clear placeholder text when the entry gets focus."""
-        if self.entry.get() == self.placeholder_text:
-            self.entry.delete(0, tk.END)
-            self.entry.config(fg='black')  # Set text color to black for user input
-    
+        entry = event.widget
+        if entry.get() == self.placeholder_text:
+            entry.delete(0, tk.END)
+
     def set_placeholder(self, event):
+        entry = event.widget
         """Set placeholder text if the entry is empty when losing focus."""
-        if self.entry.get() == "":
-            self.entry.insert(0, self.placeholder_text)
-            self.entry.config(fg='grey')  # Set placeholder color to grey
-    
+        if entry.get() == "":
+            entry.insert(0, self.placeholder_text)
+
+
     def submit(self):
-        date = self.entry.get()
+        date = self.entry1.get()
         if self.is_valid_date(date):
+            # Assuming inputMode and StartPage are defined elsewhere
             expense, income = inputMode(date)
             self.master.switch_frame(StartPage, expense, income, date)    
         else:
-            tk.messagebox.showerror("Invalid Input", "Please enter a valid date in YYYYMMDD format.")
+            messagebox.showerror("Invalid Input", "Please enter a valid date in YYYYMMDD format.")
+
     def is_valid_date(self, date_str):
         try:
             datetime.datetime.strptime(date_str, "%Y%m%d")
@@ -187,5 +188,5 @@ class ResultPage(tk.Frame):
 if __name__ == "__main__":
     app = SampleApp()
     app.update_idletasks()
+    sv_ttk.set_theme(darkdetect.theme())
     app.mainloop()
-        
