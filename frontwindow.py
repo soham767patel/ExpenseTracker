@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData
+from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData, showDataDay
 import datetime
 import sv_ttk
 import darkdetect
@@ -114,13 +114,13 @@ class StartPage(tk.Frame):
         elif not is_float(value):
             tk.messagebox.showerror("Invalid Input", "Please enter a valid amount of money")
         else:
-            if self.selected_option.get() == "Deposit":
-                self.deposit2 = deposit(income, category, source, value)
+            if self.selected_option.get() == "Withdraw":
+                self.expense2 = withdraw(expense, category, source, value)
                 self.counter+=1
                 self.entry1.delete(0, tk.END)
                 self.entry2.delete(0, tk.END)
             else:
-                self.expense2 = withdraw(expense, category, source, value)
+                self.deposit2 = deposit(income, category, source, value)
                 self.counter+=1
                 self.entry1.delete(0, tk.END)
                 self.entry2.delete(0, tk.END)
@@ -164,8 +164,8 @@ class EnterPage(tk.Frame):
         date = self.entry1.get()
         if self.is_valid_date(date):
             # Assuming inputMode and StartPage are defined elsewhere
-            expense, income = inputMode(date)
-            self.master.switch_frame(StartPage, expense, income, date)    
+            self.expense, self.income = inputMode(date)
+            self.master.switch_frame(StartPage, self.expense, self.income, date)    
         else:
             messagebox.showerror("Invalid Input", "Please enter a valid date in YYYYMMDD format.")
 
@@ -181,10 +181,13 @@ class ResultPage(tk.Frame):
     def __init__(self, master, expense2, deposit2, date):
         saveData(expense2, deposit2, date)
         tk.Frame.__init__(self, master)
-        tk.Label(self, text="This is ResultPage").pack(side="top", fill="x", pady=10)
-        tk.Button(self, text="Day's Results").pack()
+        date_str = date
+        date_obj = datetime.datetime.strptime(date_str, "%Y%m%d")
+        currDate = date_obj.strftime("%Y-%m-%d")
+        tk.Label(self, text=f"Today's Date: {currDate}").pack(side="top", fill="x", pady=10)
+        tk.Button(self, text="Day's Results", command=lambda: showDataDay(expense2, deposit2)).pack()
         tk.Button(self, text="Categories's Results").pack()
-        tk.Button(self, text="Exit Program", command=self.quit).pack(side="bottom", fill= "x", pady=10)
+        tk.Button(self, text="Exit Program", command = self.quit).pack(side="bottom", fill= "x", pady=10)
 if __name__ == "__main__":
     app = SampleApp()
     app.update_idletasks()

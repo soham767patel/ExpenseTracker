@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import os.path
-from tkinter import *
 #each individual category is give by this it will have a catalog, a name, and a total cost
 class Category:
     def __init__(self, name):
@@ -22,15 +21,8 @@ def is_alphabet(string):
     else:
         return False
 #This function will present the data in a nice manner preferably a graph or chart of sorts
-def showData(amountDict, depositDict):
-    while True:
-        print("\nWould you like to see a specific Category or Overiew?\n1.Category\n2.Overview\n")
-        represenation = input("\nType 1 or 2\n")
-        if not(int(represenation) == 1 or int(represenation) == 2):
-            print("Please Enter 1 or 2")
-            continue
-        break
-    if int(represenation) == 2:
+def showDataDay(amountDict, depositDict, isItACategory = None):
+    if isItACategory == None:
         expenseNum = []
         expenseLabel = []
         depositNum = []
@@ -62,7 +54,8 @@ def showData(amountDict, depositDict):
         ax2.legend(depositLabel, title="Income", loc="best")
         plt.tight_layout()
         plt.show()
-    elif int(represenation) == 1:
+    #Category Print
+    else:
         label = []
         numbers = []
         index = 0
@@ -125,11 +118,12 @@ def saveData(amountDict, depositDict, currDate):
     for j, jtem in enumerate(depositDict):
         itemsList.append(list(jtem.catalog.keys()))
         itemsList.append(list(jtem.catalog.values()))
-        maxLengthDep = max(maxLengthDep, len(item.catalog))
+        maxLengthDep = max(maxLengthDep, len(jtem.catalog))
         headersDeposit.append([f'{jtem.name}: Key'])
         headersDeposit.append([f'{jtem.name}: Num'])
     # Write labels to CSV file
     with open(f'{currDate}_expense.csv', 'w', newline='') as csvfile:
+        print("\nSaving Expense . . . ")
         writer = csv.writer(csvfile)
         writer.writerow(headersAmount)
         for i in range(maxLengthExp):
@@ -143,6 +137,7 @@ def saveData(amountDict, depositDict, currDate):
                     row.append(0)
             writer.writerow(row)
     with open(f'{currDate}_deposit.csv', 'w', newline='') as csvfile:
+        print("\nSaving Deposit . . . ")
         writer = csv.writer(csvfile)
         writer.writerow(headersDeposit)
         for i in range(maxLengthDep):
