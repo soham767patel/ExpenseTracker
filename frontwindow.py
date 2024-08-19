@@ -8,7 +8,7 @@ class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         #Comment
-        self.attributes('-fullscreen',True)
+        self.state('zoomed')
         #Comment
         self._frame = None
         self.title("Expense Tracker")
