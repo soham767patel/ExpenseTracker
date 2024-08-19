@@ -357,11 +357,13 @@ def delete(date, num):
         if os.path.exists(currentPathDeposit):
             print(f'{date} deposit file exists . . . deleting \n')
             file = f'{date}_deposit.csv'
+            os.remove(file)
         else:
             print(f'{date} deposit file does not exists . . . not deleting \n')
         if os.path.exists(currentPathExpense):
-            print(f'{date} expene file exists . . . deleting \n')
+            print(f'{date} expense file exists . . . deleting \n')
             file = f'{date}_expense.csv'
+            os.remove(file)
         else:
             print(f'{date} expense file does not exists . . . not deleting \n')
         #deletes day
@@ -377,11 +379,13 @@ def delete(date, num):
             if os.path.exists(currentPathDeposit):
                 print(f'{currDate} deposit file exists . . . deleting \n')
                 file = f'{currDate}_deposit.csv'
+                os.remove(file)
             else:
                 print(f'{currDate} deposit file does not exists . . . not deleting \n')
             if os.path.exists(currentPathExpense):
-                print(f'{currDate} expene file exists . . . deleting \n')
+                print(f'{currDate} expense file exists . . . deleting \n')
                 file = f'{currDate}_expense.csv'
+                os.remove(file)
             else:
                 print(f'{currDate} expense file does not exists . . . not deleting \n')
         #delete month
@@ -403,10 +407,14 @@ def delete(date, num):
                 if os.path.exists(currentPathDeposit):
                     print(f'{currDate} deposit file exists . . . deleting \n')
                     file = f'{currDate}_deposit.csv'
+                    os.remove(file)
                 else:
                     print(f'{currDate} deposit file does not exists . . . not deleting \n')
                 if os.path.exists(currentPathExpense):
-                    print(f'{currDate} expene file exists . . . deleting \n')
+                    print(f'{currDate} expense file exists . . . deleting \n')
                     file = f'{currDate}_expense.csv'
+                    os.remove(file)
+
                 else:
                     print(f'{currDate} expense file does not exists . . . not deleting \n')
+    return "deleted if existed . . ."

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData, showDataDay, showDataMonth, showDataYear
+from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, saveData, showDataDay, showDataMonth, showDataYear, delete
 import datetime
 from tkinter import *
 from tkinter import font
@@ -8,6 +8,10 @@ from tkinter import font
 class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
+        #Comment
+        self.attributes('-fullscreen',True)
+
+        #Comment
         self._frame = None
         self.title("Expense Tracker")
         self.switch_frame(EnterPage)
@@ -26,14 +30,15 @@ class StartPage(tk.Frame):
     def __init__(self, master, expense, income, date):
         self.counter = 0
         super().__init__(master)
+        self.configure(bg = "black")
         self.expense2 = expense
         self.deposit2 = income
         self.rowconfigure([0,1,2,3,4], weight = 1)
         self.columnconfigure([0,1], weight = 2)
         # Create and grid the label
-        self.entry3 = tk.Label(self, text="Expenses and Income:")
+        self.entry3 = tk.Label(self, text="Expenses and Income:", bg = "black", fg = "white")
         self.entry3.grid(row = 0, column = 0, sticky = "nsew")
-        self.counter_label = tk.Label(self, text=f'Submits Made: {self.counter}')
+        self.counter_label = tk.Label(self, text=f'Submits Made: {self.counter}', bg = "black", fg = "white")
         self.counter_label.grid(row=0, column=1, sticky = "nsew")
         # Create StringVar for the main dropdown menu
         self.selected_option = tk.StringVar()
@@ -162,19 +167,18 @@ class EnterPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         self.configure(bg = "black")
-       # super().__init__(master)
-        self.rowconfigure([0,1,2], weight = 1)
+        self.rowconfigure([0,1,2,3,4,5,6], weight = 1)
         self.columnconfigure(0, weight = 1)
         # Label above the entry box
         self.top_label = tk.Label(self, text="Enter the Date in YYYYMMDD:", bg = "black", fg = "white")
-        self.top_label.grid(row = 0, column = 0, pady=10, sticky = "nsew")
+        self.top_label.grid(row = 0, column = 0, ipady=10, sticky = "nsew")
 
         # Entry widget with placeholder text
         self.entry1 = tk.Entry(self)
         self.placeholder_text = "YYYYMMDD"
         self.entry1.insert(0, self.placeholder_text)
         self.entry1.configure( bg = "black", fg = "white")
-        self.entry1.grid(row = 1, column = 0, pady=5, sticky = "nsew")
+        self.entry1.grid(row = 1, column = 0, ipady=5, sticky = "nsew")
 
         # Bind events for clearing and resetting placeholder text
         self.entry1.bind("<FocusIn>", self.clear_placeholder)
@@ -182,8 +186,15 @@ class EnterPage(tk.Frame):
 
         # Submit button
         self.entry2 = tk.Button(self, text="Submit", command=self.submit, fg = "black")
-        self.entry2.grid(row = 2, column = 0, pady=10, sticky = "nsew")
-
+        self.entry2.grid(row = 2, column = 0, ipady=10, sticky = "nsew")
+        self.entry3 = tk.Button(self, text="Delete Date", command=lambda: self.control_of_delete(self.entry1.get(), 3), fg = "black")
+        self.entry3.grid(row = 3, column = 0, ipady=10, sticky = "nsew")
+        self.entry4 = tk.Button(self, text="Delete Month", command=lambda: self.control_of_delete(self.entry1.get(), 2), fg = "black")
+        self.entry4.grid(row = 4, column = 0, ipady=10, sticky = "nsew")
+        self.entry5 = tk.Button(self, text="Delete Year", command=lambda: self.control_of_delete(self.entry1.get(), 1), fg = "black")
+        self.entry5.grid(row = 5, column = 0, ipady=10, sticky = "nsew")
+        self.button7 =tk.Button(self, text="Exit Program", command = self.quit)
+        self.button7.grid(row = 6, column = 0, ipady=10, sticky = "nwes")
         self.bind("<Configure>", self.on_resize)
     def on_resize(self, event):
         """Update font size based on window size."""
@@ -204,6 +215,10 @@ class EnterPage(tk.Frame):
         self.top_label.config(font=new_font)
         self.entry1.config(font=new_font)
         self.entry2.config(font=new_font)
+        self.entry3.config(font=new_font)
+        self.entry4.config(font=new_font)
+        self.entry5.config(font=new_font)
+        self.button7.config(font=new_font)
     def clear_placeholder(self, event):
         """Clear placeholder text when the entry gets focus."""
         entry = event.widget
@@ -217,8 +232,13 @@ class EnterPage(tk.Frame):
         if entry.get() == "":
             entry.insert(0, self.placeholder_text)
             entry.configure(bg = "black", fg = "white")
-
-
+    def control_of_delete(self,date, num):
+        date = self.entry1.get()
+        if self.is_valid_date(date):
+            # Assuming inputMode and StartPage are defined elsewhere
+            messagebox.showinfo("Message Title" ,delete(date, num))
+        else:
+            messagebox.showerror("Invalid Input", "Please enter a valid date in YYYYMMDD format.")
     def submit(self):
         date = self.entry1.get()
         if self.is_valid_date(date):
@@ -240,23 +260,24 @@ class ResultPage(tk.Frame):
         tk.Frame.__init__(self, master)
         self.rowconfigure([0,1,2,3,4,5,6], weight = 1)
         self.columnconfigure(0, weight = 1)
+        self.configure(bg = "black")
         date_str = date
         date_obj = datetime.datetime.strptime(date_str, "%Y%m%d")
         currDate = date_obj.strftime("%Y-%m-%d")
-        self.button1 = tk.Label(self, text=f"Today's Date: {currDate}")
-        self.button1.grid(row = 0, column = 0, pady=10, sticky = "nwes")
+        self.button1 = tk.Label(self, text=f"Today's Date: {currDate}", bg = "black", fg = "white")
+        self.button1.grid(row = 0, column = 0, ipady=10, sticky = "nwes")
         self.button2 =tk.Button(self, text="Day's Results", command=lambda: showDataDay(expense2, deposit2, date))
-        self.button2.grid(row = 1, column = 0, pady=10, sticky = "nwes")
+        self.button2.grid(row = 1, column = 0, ipady=10, sticky = "nwes")
         self.button3 = tk.Button(self, text="Deposit's Results", command=lambda: master.switch_frame(DepositResultPage,date,expense2,deposit2))
-        self.button3.grid(row = 2, column = 0, pady=10, sticky = "nwes")
+        self.button3.grid(row = 2, column = 0, ipady=10, sticky = "nwes")
         self.button4 =tk.Button(self, text="Expense's Results", command=lambda: master.switch_frame(ExpenseResultPage,date,expense2,deposit2))
-        self.button4.grid(row = 3, column = 0, pady=10, sticky = "nwes")
+        self.button4.grid(row = 3, column = 0, ipady=10, sticky = "nwes")
         self.button5 =tk.Button(self, text="Month's Results", command=lambda: showDataMonth(date))
-        self.button5.grid(row = 4, column = 0, pady=10, sticky = "nwes")
+        self.button5.grid(row = 4, column = 0, ipady=10, sticky = "nwes")
         self.button6 =tk.Button(self, text="Years's Results", command=lambda: showDataYear(date))
-        self.button6.grid(row = 5, column = 0, pady=10, sticky = "nwes")
+        self.button6.grid(row = 5, column = 0, ipady=10, sticky = "nwes")
         self.button7 =tk.Button(self, text="Exit Program", command = self.quit)
-        self.button7.grid(row = 6, column = 0, pady=10, sticky = "nwes")
+        self.button7.grid(row = 6, column = 0, ipady=10, sticky = "nwes")
         self.bind("<Configure>", self.on_resize)
     def on_resize(self, event):
         """Update font size based on window size."""
@@ -283,24 +304,117 @@ class ResultPage(tk.Frame):
         self.button7.config(font=new_font)
 class DepositResultPage(tk.Frame):
     def __init__(self, master, date, expense, deposit):
+        tk.Frame.__init__(self, master)
         self.expense2 = expense
         self.deposit2 = deposit
-        tk.Frame.__init__(self, master)
+        self.configure(bg = "black")
+        self.rowconfigure([0,1,2,3,4,5,6, 7], weight = 1)
+        self.columnconfigure(0, weight = 1)
+
         depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
-        tk.Label(self, text=f"Deposit Results: {date}").grid(row = 0, column = 0, pady=10)
-        for i, item in enumerate(depositCategory):
-            tk.Button(self, text=f'{depositCategory[i]}', command=lambda num=i: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1)).grid(column = 0, pady=10)
-        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(column = 0, pady=10)
+        self.entry1 = tk.Label(self, text=f"Deposit Results: {date}", bg = "black", fg = "white")
+        self.entry1.grid(row = 0, column = 0, ipady=10, sticky = "nwes")
+        self.button1 = tk.Button(self, text=f'{depositCategory[0]}', command=lambda num=0: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1))
+        self.button1.grid(row = 1, column = 0, ipady=10, sticky = "nwes")
+        self.button2 = tk.Button(self, text=f'{depositCategory[1]}', command=lambda num=1: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1))
+        self.button2.grid(row = 2, column = 0, ipady=10, sticky = "nwes")
+        self.button3 = tk.Button(self, text=f'{depositCategory[2]}', command=lambda num=2: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1))
+        self.button3.grid(row = 3, column = 0, ipady=10, sticky = "nwes")
+        self.button4 = tk.Button(self, text=f'{depositCategory[3]}', command=lambda num=3: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1))
+        self.button4.grid(row = 4, column = 0, ipady=10, sticky = "nwes")
+        self.button5 = tk.Button(self, text=f'{depositCategory[4]}', command=lambda num=4: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1))
+        self.button5.grid(row = 5, column = 0, ipady=10, sticky = "nwes")
+        self.button6 = tk.Button(self, text=f'{depositCategory[5]}', command=lambda num=5: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1))
+        self.button6.grid(row = 6, column = 0, ipady=10, sticky = "nwes")
+        self.button7 = tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date))
+        self.button7.grid(row = 7, column = 0, ipady=10, sticky = "nwes")
+        self.bind("<Configure>", self.on_resize)
+    def on_resize(self, event):
+        """Update font size based on window size."""
+        # Get window dimensions
+        height = self.winfo_height()
+        
+        # Calculate a scaling factor based on window size
+        # For example, font size could be based on height
+        scale_factor = height / 20
+        
+        # Create a new font size
+        new_font_size = int(scale_factor)
+        
+        # Create a font object with the new size
+        new_font = font.Font(family="Helvetica", size=new_font_size)
+        
+        # Update the font of widgets
+        self.entry1.config(font=new_font)
+        self.button1.config(font=new_font)
+        self.button2.config(font=new_font)
+        self.button3.config(font=new_font)
+        self.button4.config(font=new_font)
+        self.button5.config(font=new_font)
+        self.button6.config(font=new_font)
+        self.button7.config(font=new_font)
 class ExpenseResultPage(tk.Frame):
     def __init__(self, master, date, expense, deposit):
         tk.Frame.__init__(self, master)
         self.expense2 = expense
         self.deposit2 = deposit
+        self.configure(bg = "black")
+        self.rowconfigure([0,1,2,3,4,5,6,7,8,9,10,11], weight = 1)
+        self.columnconfigure(0, weight = 1)
         expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
-        tk.Label(self, text=f"Expense Results: {date}").grid(row = 0, column = 0, pady=10)
-        for j, jtem in enumerate(expensesCategory):
-            tk.Button(self, text=f'{expensesCategory[j]}', command=lambda num=j: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2)).grid(column = 0, pady=10)
-        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(column = 0, pady=10)
+        self.entry1 = tk.Label(self, text=f"Expense Results: {date}", bg = "black", fg = "white",)
+        self.entry1.grid(row = 0, column = 0, ipady=10, sticky = "nwes")
+        self.button1 = tk.Button(self, text=f'{expensesCategory[0]}', command=lambda num=0: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button1.grid(row = 1, column = 0, ipady=10, sticky = "nwes")
+        self.button2 = tk.Button(self, text=f'{expensesCategory[1]}', command=lambda num=1: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button2.grid(row = 2, column = 0, ipady=10, sticky = "nwes")
+        self.button3 = tk.Button(self, text=f'{expensesCategory[2]}', command=lambda num=2: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button3.grid(row = 3, column = 0, ipady=10, sticky = "nwes")
+        self.button4 = tk.Button(self, text=f'{expensesCategory[3]}', command=lambda num=3: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button4.grid(row = 4, column = 0, ipady=10, sticky = "nwes")
+        self.button5 = tk.Button(self, text=f'{expensesCategory[4]}', command=lambda num=4: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button5.grid(row = 5, column = 0, ipady=10, sticky = "nwes")
+        self.button6 = tk.Button(self, text=f'{expensesCategory[5]}', command=lambda num=5: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button6.grid(row = 6, column = 0, ipady=10, sticky = "nwes")
+        self.button7 = tk.Button(self, text=f'{expensesCategory[6]}', command=lambda num=6: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button7.grid(row = 7, column = 0, ipady=10, sticky = "nwes")
+        self.button8 = tk.Button(self, text=f'{expensesCategory[7]}', command=lambda num=7: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button8.grid(row = 8, column = 0, ipady=10, sticky = "nwes")
+        self.button9 = tk.Button(self, text=f'{expensesCategory[8]}', command=lambda num=8: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button9.grid(row = 9, column = 0, ipady=10, sticky = "nwes")
+        self.button10 = tk.Button(self, text=f'{expensesCategory[9]}', command=lambda num=9: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2))
+        self.button10.grid(row = 10, column = 0, ipady=10, sticky = "nwes")
+        self.button11 = tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date))
+        self.button11.grid(row = 11, column = 0, ipady=10, sticky = "nwes")
+        self.bind("<Configure>", self.on_resize)
+    def on_resize(self, event):
+        """Update font size based on window size."""
+        # Get window dimensions
+        height = self.winfo_height()
+        
+        # Calculate a scaling factor based on window size
+        # For example, font size could be based on height
+        scale_factor = height / 20
+        
+        # Create a new font size
+        new_font_size = int(scale_factor)
+        
+        # Create a font object with the new size
+        new_font = font.Font(family="Helvetica", size=new_font_size)
+        
+        # Update the font of widgets
+        self.entry1.config(font=new_font)
+        self.button1.config(font=new_font)
+        self.button2.config(font=new_font)
+        self.button3.config(font=new_font)
+        self.button4.config(font=new_font)
+        self.button5.config(font=new_font)
+        self.button6.config(font=new_font)
+        self.button7.config(font=new_font)
+        self.button8.config(font=new_font)
+        self.button9.config(font=new_font)
+        self.button10.config(font=new_font)
+        self.button11.config(font=new_font)
 if __name__ == "__main__":
     app = SampleApp()
     app.update_idletasks()
