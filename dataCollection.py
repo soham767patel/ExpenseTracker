@@ -347,3 +347,66 @@ def deposit(depositDict, index, reason, amount):
         newAmount = depositDict[int(index)].catalog.get(str(reason.lower())) + float(amount)
         depositDict[int(index)].catalog[str(reason.lower())] = float(newAmount)
     return depositDict
+
+#This function deletes csv files
+def delete(date, num):
+    if num == 3:
+        currentDirectory = os.getcwd()
+        currentPathExpense = currentDirectory + f'/{date}_expense.csv'
+        currentPathDeposit = currentDirectory + f'/{date}_deposit.csv'
+        if os.path.exists(currentPathDeposit):
+            print(f'{date} deposit file exists . . . deleting \n')
+            file = f'{date}_deposit.csv'
+        else:
+            print(f'{date} deposit file does not exists . . . not deleting \n')
+        if os.path.exists(currentPathExpense):
+            print(f'{date} expene file exists . . . deleting \n')
+            file = f'{date}_expense.csv'
+        else:
+            print(f'{date} expense file does not exists . . . not deleting \n')
+        #deletes day
+    elif num == 2:
+        for i in range(1,32):
+            if i < 10:
+                currDate = date[:6] + "0" + str(i)
+            else:
+                currDate = date[:6] + str(i)
+            currentDirectory = os.getcwd()
+            currentPathExpense = currentDirectory + f'/{currDate}_expense.csv'
+            currentPathDeposit = currentDirectory + f'/{currDate}_deposit.csv'
+            if os.path.exists(currentPathDeposit):
+                print(f'{currDate} deposit file exists . . . deleting \n')
+                file = f'{currDate}_deposit.csv'
+            else:
+                print(f'{currDate} deposit file does not exists . . . not deleting \n')
+            if os.path.exists(currentPathExpense):
+                print(f'{currDate} expene file exists . . . deleting \n')
+                file = f'{currDate}_expense.csv'
+            else:
+                print(f'{currDate} expense file does not exists . . . not deleting \n')
+        #delete month
+    elif num == 1:
+        #delete year
+        for j in range(1,13):
+            if j < 10:
+                curr = date[:4] + "0" + str(j)
+            else:
+                curr = date[:4] + str(j)
+            for i in range(1,32):
+                if i < 10:
+                    currDate = curr + "0" + str(i)
+                else:
+                    currDate = curr + str(i)
+                currentDirectory = os.getcwd()
+                currentPathExpense = currentDirectory + f'/{currDate}_expense.csv'
+                currentPathDeposit = currentDirectory + f'/{currDate}_deposit.csv'
+                if os.path.exists(currentPathDeposit):
+                    print(f'{currDate} deposit file exists . . . deleting \n')
+                    file = f'{currDate}_deposit.csv'
+                else:
+                    print(f'{currDate} deposit file does not exists . . . not deleting \n')
+                if os.path.exists(currentPathExpense):
+                    print(f'{currDate} expene file exists . . . deleting \n')
+                    file = f'{currDate}_expense.csv'
+                else:
+                    print(f'{currDate} expense file does not exists . . . not deleting \n')

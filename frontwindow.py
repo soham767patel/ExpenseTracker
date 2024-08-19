@@ -257,6 +257,30 @@ class ResultPage(tk.Frame):
         self.button6.grid(row = 5, column = 0, pady=10, sticky = "nwes")
         self.button7 =tk.Button(self, text="Exit Program", command = self.quit)
         self.button7.grid(row = 6, column = 0, pady=10, sticky = "nwes")
+        self.bind("<Configure>", self.on_resize)
+    def on_resize(self, event):
+        """Update font size based on window size."""
+        # Get window dimensions
+        height = self.winfo_height()
+        
+        # Calculate a scaling factor based on window size
+        # For example, font size could be based on height
+        scale_factor = height / 20
+        
+        # Create a new font size
+        new_font_size = int(scale_factor)
+        
+        # Create a font object with the new size
+        new_font = font.Font(family="Helvetica", size=new_font_size)
+        
+        # Update the font of widgets
+        self.button1.config(font=new_font)
+        self.button2.config(font=new_font)
+        self.button3.config(font=new_font)
+        self.button4.config(font=new_font)
+        self.button5.config(font=new_font)
+        self.button6.config(font=new_font)
+        self.button7.config(font=new_font)
 class DepositResultPage(tk.Frame):
     def __init__(self, master, date, expense, deposit):
         self.expense2 = expense
@@ -265,18 +289,18 @@ class DepositResultPage(tk.Frame):
         depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
         tk.Label(self, text=f"Deposit Results: {date}").grid(row = 0, column = 0, pady=10)
         for i, item in enumerate(depositCategory):
-            tk.Button(self, text=f'{depositCategory[i]}', command=lambda num=i: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1)).grid(row = 1, column = 0, pady=10)
-        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(row = 2, column = 0, pady=10)
+            tk.Button(self, text=f'{depositCategory[i]}', command=lambda num=i: showDataDay(self.expense2, self.deposit2, date, num, None, None, 1)).grid(column = 0, pady=10)
+        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(column = 0, pady=10)
 class ExpenseResultPage(tk.Frame):
     def __init__(self, master, date, expense, deposit):
         tk.Frame.__init__(self, master)
         self.expense2 = expense
         self.deposit2 = deposit
         expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
-        tk.Label(self, text=f"Expense Results; {date}").grid(row = 0, column = 0, pady=10)
+        tk.Label(self, text=f"Expense Results: {date}").grid(row = 0, column = 0, pady=10)
         for j, jtem in enumerate(expensesCategory):
-            tk.Button(self, text=f'{expensesCategory[j]}', command=lambda num=j: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2)).grid(row = 1, column = 0, pady=10)
-        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(row = 2, column = 0, pady=10)
+            tk.Button(self, text=f'{expensesCategory[j]}', command=lambda num=j: showDataDay(self.expense2, self.deposit2, date, num, None, None, 2)).grid(column = 0, pady=10)
+        tk.Button(self, text="Return", command=lambda: master.switch_frame(ResultPage, self.expense2, self.deposit2, date)).grid(column = 0, pady=10)
 if __name__ == "__main__":
     app = SampleApp()
     app.update_idletasks()
