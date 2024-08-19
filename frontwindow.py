@@ -4,14 +4,11 @@ from dataCollection import inputMode, is_float, is_alphabet, withdraw, deposit, 
 import datetime
 from tkinter import *
 from tkinter import font
-import ttkbootstrap.icons as tb
-from ttkbootstrap.icons import Icon
 class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         #Comment
         self.attributes('-fullscreen',True)
-        self.iconbitmap("logo.ico")
         #Comment
         self._frame = None
         self.title("Expense Tracker")
