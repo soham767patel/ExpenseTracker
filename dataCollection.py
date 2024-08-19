@@ -1,5 +1,9 @@
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
+import tkinter
+from tkinter import messagebox
 import csv
 import os.path
 #each individual category is give by this it will have a catalog, a name, and a total cost
@@ -22,75 +26,84 @@ def is_alphabet(string):
         return False
 #This function will present the data in a nice manner preferably a graph or chart of sorts
 def showDataDay(amountDict, depositDict, date, isItACategory = None, isMonth = None, isYear = None, deposit = 0):
-    if isItACategory == None:
-        expenseNum = []
-        expenseLabel = []
-        depositNum = []
-        depositLabel = []
-        for i in amountDict:
-            i.addition()
-            expenseNum.append(i.total)
-            expenseLabel.append(i.name)
-        for j in depositDict:
-            j.addition()
-            depositNum.append(j.total)
-            depositLabel.append(j.name)
+    for item in amountDict:
+        item.addition()
+    for jtem in depositDict:
+        jtem.addition()
+    amountTotal = sum(item.total for item in amountDict)
+    depositTotal = sum(item.total for item in depositDict)
+    if not depositTotal == 0  and not amountTotal == 0:
+        if isItACategory == None:
+            expenseNum = []
+            expenseLabel = []
+            depositNum = []
+            depositLabel = []
+            for i in amountDict:
+                i.addition()
+                expenseNum.append(i.total)
+                expenseLabel.append(i.name)
+            for j in depositDict:
+                j.addition()
+                depositNum.append(j.total)
+                depositLabel.append(j.name)
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
-        if isMonth == None and isYear == None:
-            fig.suptitle(f'Date: {date}', fontsize=30)
-        elif isYear == None:
-            monthDict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
-            monthNum = date[4] + date[5]
-            month = int(monthNum)
-            fig.suptitle(f'{monthDict[month]} {date[:4]}', fontsize=30)
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
+            if isMonth == None and isYear == None:
+                fig.suptitle(f'Date: {date}', fontsize=30)
+            elif isYear == None:
+                monthDict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"}
+                monthNum = date[4] + date[5]
+                month = int(monthNum)
+                fig.suptitle(f'{monthDict[month]} {date[:4]}', fontsize=30)
+            else:
+                fig.suptitle(f'{date[:4]}', fontsize=30)
+            totalExpense = sum(expenseNum)
+            totalDeposit = sum(depositNum)
+            for i in range(len(depositNum)):
+                depositLabel[i] = f"{depositLabel[i]}: {depositNum[i]/totalDeposit *100:.1f}%"
+            for j in range(len(expenseNum)):
+                expenseLabel[j] = f"{expenseLabel[j]}: {expenseNum[j]/totalExpense *100:.1f}%"
+            # Plotting the pie chart for expenses
+            ax1.pie(expenseNum, startangle=140)
+            ax1.set_title(f'Expenses: ${round(totalExpense,2)}')
+            ax1.legend(expenseLabel,title="Expense", loc="best")
+
+            # Plotting the pie chart for deposits
+            ax2.pie(depositNum, startangle=140)
+            ax2.set_title(f'Income: ${round(totalDeposit,2)}')
+            ax2.legend(depositLabel, title="Income", loc="best")
+            plt.tight_layout()
+            plt.show()
+        #Category Print
         else:
-            fig.suptitle(f'{date[:4]}', fontsize=30)
-        totalExpense = sum(expenseNum)
-        totalDeposit = sum(depositNum)
-        for i in range(len(depositNum)):
-            depositLabel[i] = f"{depositLabel[i]}: {depositNum[i]/totalDeposit *100:.1f}%"
-        for j in range(len(expenseNum)):
-            expenseLabel[j] = f"{expenseLabel[j]}: {expenseNum[j]/totalExpense *100:.1f}%"
-        # Plotting the pie chart for expenses
-        ax1.pie(expenseNum, startangle=140)
-        ax1.set_title(f'Expenses: ${totalExpense}')
-        ax1.legend(expenseLabel,title="Expense", loc="best")
+            if deposit == 0:
+                pass
+            elif deposit == 1:
+                currentSec = depositDict
+            elif deposit == 2:
+                currentSec = amountDict
+            category = isItACategory
+            label = []
+            numbers = []
+            total = 0
+            currentCatalog = currentSec[int(category)].catalog
+            currentSec[int(category)].addition()
+            total = currentSec[int(category)].total
+            index = int(category)
+            label = list(currentCatalog.keys())
+            numbers = list(currentCatalog.values())
+            for i in range(len(numbers)):
+                label[i] = f"{label[i]}: {numbers[i]/total *100:.1f}%"
+            # Plotting the pie chart for expenses
+            fig, (ax1) = plt.subplots(figsize=(14, 7))
+            ax1.pie(numbers, startangle=140)
+            ax1.set_title(f'{currentSec[index].name}: ${total}')
+            ax1.legend(label, loc="best")
 
-        # Plotting the pie chart for deposits
-        ax2.pie(depositNum, startangle=140)
-        ax2.set_title(f'Income: ${totalDeposit}')
-        ax2.legend(depositLabel, title="Income", loc="best")
-        plt.tight_layout()
-        plt.show()
-    #Category Print
+            plt.tight_layout()
+            plt.show()
     else:
-        if deposit == 0:
-            pass
-        elif deposit == 1:
-            currentSec = depositDict
-        elif deposit == 2:
-            currentSec = amountDict
-        category = isItACategory
-        label = []
-        numbers = []
-        total = 0
-        currentCatalog = currentSec[int(category)].catalog
-        currentSec[int(category)].addition()
-        total = currentSec[int(category)].total
-        index = int(category)
-        label = list(currentCatalog.keys())
-        numbers = list(currentCatalog.values())
-        for i in range(len(numbers)):
-            label[i] = f"{label[i]}: {numbers[i]/total *100:.1f}%"
-        # Plotting the pie chart for expenses
-        fig, (ax1) = plt.subplots(figsize=(14, 7))
-        ax1.pie(numbers, startangle=140)
-        ax1.set_title(f'{currentSec[index].name}: ${total}')
-        ax1.legend(label, loc="best")
-
-        plt.tight_layout()
-        plt.show()      
+        tkinter.messagebox.showerror("Invalid Input", "You have 0 expenses or 0 deposits")    
 def showDataMonth(currDate):
     expensesCategory = ["Housing", "Transportation", "Healthcare", "Education", "Entertainment and Leisure","Personal Care","Clothing","Insurance","Taxes","Miscellaneous"]
     depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]

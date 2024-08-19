@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
+import sv_ttk
 import os.path
 from tkinter import *
 #each individual category is give by this it will have a catalog, a name, and a total cost
