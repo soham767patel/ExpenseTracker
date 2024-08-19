@@ -63,15 +63,26 @@ def showDataDay(amountDict, depositDict, date, isItACategory = None, isMonth = N
                 depositLabel[i] = f"{depositLabel[i]}: {depositNum[i]/totalDeposit *100:.1f}%"
             for j in range(len(expenseNum)):
                 expenseLabel[j] = f"{expenseLabel[j]}: {expenseNum[j]/totalExpense *100:.1f}%"
-            # Plotting the pie chart for expenses
-            ax1.pie(expenseNum, startangle=140)
-            ax1.set_title(f'Expenses: ${round(totalExpense,2)}')
-            ax1.legend(expenseLabel,title="Expense", loc="best")
+            if(not len(depositLabel) > 5 or not len(expenseLabel) > 5):
+                # Plotting the pie chart for expenses
+                ax1.pie(expenseNum, startangle=140)
+                ax1.set_title(f'Expenses: ${round(totalExpense,2)}')
+                ax1.legend(expenseLabel,title="Expense", loc="best")
 
-            # Plotting the pie chart for deposits
-            ax2.pie(depositNum, startangle=140)
-            ax2.set_title(f'Income: ${round(totalDeposit,2)}')
-            ax2.legend(depositLabel, title="Income", loc="best")
+                # Plotting the pie chart for deposits
+                ax2.pie(depositNum, startangle=140)
+                ax2.set_title(f'Income: ${round(totalDeposit,2)}')
+                ax2.legend(depositLabel, title="Income", loc="best")
+            else:
+                ax1.set_xticklabels(expenseLabel, rotation=45, ha='right')
+                ax1.bar(expenseLabel, expenseNum)
+                ax1.set_title(f'Expenses: ${round(totalExpense,2)}')
+                # Plotting the pie chart for deposits
+                ax2.bar(depositLabel, depositNum)
+                ax2.set_title(f'Income: ${round(totalDeposit,2)}')
+                ax2.set_xticklabels(depositLabel, rotation=45, ha='right')
+
+
             plt.tight_layout()
             plt.show()
         #Category Print
