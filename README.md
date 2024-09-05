@@ -1,8 +1,14 @@
 # MoneyMinder
-This is an expense tracker app which runs on windows, and macOS without the need of Wi-Fi. 
+MoneyMinder is a expense tracker app designed for Windows and macOS. It operates offline and allows user to manage and visualize their finacial data efficiently.
 ## How it was built
-It was built with Custom Tkinter GUI interaction, and Python data collection and handling.
+MoneyMinder was developed using:
+* Custom Tkinter for GUI interactions
+* Python for data collection and handling
+* CSV files for input and output storage
 ## Installation and Execution
+1 Download the appropriate folder for your operating system:
+* MacOS Executable Folder
+* Window Executable Folder
 Just download the MacOS_Executable_Folder or the Window_Executable_Folder, and then run the executable
 ## Usage
 You can add expenses, or deposits and it saves the data per category per date using a csv file input, output system.
