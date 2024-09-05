@@ -1,5 +1,7 @@
 # MoneyMinder
-This is an expense tracker app which runs on windows, and macOS without the need of Wi-Fi built with Custom Tkinter GUI interaction, and python data collection and handling.
+This is an expense tracker app which runs on windows, and macOS without the need of Wi-Fi. 
+## How it was built
+It was built with Custom Tkinter GUI interaction, and python data collection and handling.
 ## Installation
 Just download the MacOS_Executable_Folder or the Window_Executable_Folder
 ## Usage
