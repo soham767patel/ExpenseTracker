@@ -6,7 +6,7 @@ MoneyMinder was developed using:
 * Python for data collection and handling
 * CSV files for input and output storage
 ## Installation and Execution
-1 Download the appropriate folder for your operating system:
+1. Download the appropriate folder for your operating system:
 * MacOS Executable Folder
 * Window Executable Folder
 Just download the MacOS_Executable_Folder or the Window_Executable_Folder, and then run the executable
