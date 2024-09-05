@@ -10,11 +10,10 @@ MoneyMinder was developed using:
  * MacOS Executable Folder
  * Window Executable Folder
 2. Extract the contents of the folder (unzip it)
-3.
+3. Run the executable file to start the application
 ## Usage
-You can add expenses, or deposits and it saves the data per category per date using a csv file input, output system.
-You can also remove data for a date, a month, or a year. 
-You can then view this data in the form of pie or bar chart to get a better understanding of your finances to see the specific date's overview, month's overview, or the year's overview.
+MoneyMinder allows you to:
+* **Add Expenses and Deposits:** Track you financial activities by adding data categorized by type and date.
 ## Contributing 
 Pull requests are welcome. I am still deciding on opening up the project to others, but if you want to contribute, just message me. 
 
