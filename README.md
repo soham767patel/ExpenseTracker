@@ -15,7 +15,7 @@ MoneyMinder was developed using:
 MoneyMinder allows you to:
 1. **Add Expenses and Deposits:** Track your financial activities by adding data categorized by type and date.
 2. **Remove Data:** Delete entries by date, month, or year.
-3.  **View Data Visualization**: Analyze your finacial data through pie or bar charts, with options to view
+3.  **View Data Visualization**: Analyze your finacial data through pie or bar charts, with options to view:
   - Specific date's overview
   - Monthly overview
   - Yearly overview  
