@@ -7,9 +7,10 @@ MoneyMinder was developed using:
 * CSV files for input and output storage
 ## Installation and Execution
 1. Download the appropriate folder for your operating system:
-* MacOS Executable Folder
-* Window Executable Folder
-Just download the MacOS_Executable_Folder or the Window_Executable_Folder, and then run the executable
+ * MacOS Executable Folder
+ * Window Executable Folder
+2. Extract the contents of the folder (unzip it)
+3.
 ## Usage
 You can add expenses, or deposits and it saves the data per category per date using a csv file input, output system.
 You can also remove data for a date, a month, or a year. 
