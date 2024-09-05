@@ -20,7 +20,7 @@ MoneyMinder allows you to:
   - Monthly overview
   - Yearly overview  
 ## Contributing 
-I welcome contributions! If you'd like to contribute to MoneyMinder, please reach out to me directly.
+If you'd like to contribute to MoneyMinder, please reach out to me directly.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
