@@ -9,7 +9,7 @@ MoneyMinder was developed using:
 ## Installation and Execution
 1. Download the appropriate folder for your operating system:
   - MacOS Executable Folder
-  - Window Executable Folder
+  - Window Executable Folder (In Progess)
 2. Extract the contents of the folder (unzip it)
 3. Run the executable file to start the application
 ## Usage
