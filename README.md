@@ -5,6 +5,7 @@ MoneyMinder was developed using:
 * Custom Tkinter for GUI interactions
 * Python for data collection and handling
 * CSV files for input and output storage
+* Pyinstaller for packaging into an executable
 ## Installation and Execution
 1. Download the appropriate folder for your operating system:
   - MacOS Executable Folder
