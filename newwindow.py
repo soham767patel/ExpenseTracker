@@ -10,7 +10,7 @@ class SampleApp(customtkinter.CTk):
         super().__init__()
         self.state('zoomed')
         self._frame = None
-        self.title("Expense Tracker")
+        self.title("MoneyMinder")
         self.switch_frame(StartPage)
         self.update_idletasks()
         self.grid_rowconfigure(0, weight=1)
@@ -21,6 +21,8 @@ class SampleApp(customtkinter.CTk):
         new_frame = frame_class(self, *args)
         if self._frame is not None:
             self._frame.destroy()
+        self.rowconfigure([0,1,2], weight = 1)
+        self.columnconfigure(0, weight = 1)
         self._frame = new_frame
         self._frame.grid(row=0, column=0, sticky="nsew")
         self.update_idletasks()
@@ -51,7 +53,7 @@ class StartPage(customtkinter.CTkFrame):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky = "ew")
         
         # Buttons above appearance mode section
-        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Exit", command=self.sidebar_button_event)
+        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Exit", command=self.quit)
         self.appearance_mode_button_1.grid(row=1, column=0, padx=20, pady=(50, 250))
         
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=("Arial", 16))
@@ -85,7 +87,7 @@ class StartPage(customtkinter.CTkFrame):
         self.selection_optionmenu = customtkinter.CTkOptionMenu(self.delete_input_frame, values=["Delete Year", "Delete Month", "Delete Date"], font=("Arial", 40))
         self.selection_optionmenu.grid(row=1, column=0, padx=20, pady=(10, 105), sticky="ew")
 
-        self.delete_button = customtkinter.CTkButton(self.delete_input_frame, text="Delete", command=self.delete_date, font=("Arial", 40))
+        self.delete_button = customtkinter.CTkButton(self.delete_input_frame, text="Delete", command=lambda: self.delete_date(self.selection_optionmenu.get(), self.date_entry.get()), font=("Arial", 40))
         self.delete_button.grid(row=2, column=0, padx=20, pady=(10, 100), sticky="ew")
 
         # set default values
@@ -95,13 +97,25 @@ class StartPage(customtkinter.CTkFrame):
     def submit_date(self):
         date_value = self.date_entry.get()
         if self.validate_date(date_value):
-            self.master.switch_frame(EnterPage)
+            self.master.switch_frame(EnterPage,date_value)
         else:
             tkinter.messagebox.showerror("Invalid Date Format","Please enter date in YYYYMMDD format.")
 
-    def delete_date(self):
-        self.date_entry.delete(0, tkinter.END)
-        print("Date Deleted")
+    def delete_date(self, entry, date):
+        num = 0
+        if(entry == "Delete Year"):
+            num = 1
+        elif(entry == "Delete Month"):
+            num = 2
+        elif(entry == "Delete Date"):
+            num = 3
+        else:
+            tkinter.messagebox.showerror("Invalid Input", "Please Pick Deletion Selection")
+        if self.validate_date(date):
+            # Assuming inputMode and StartPage are defined elsewhere
+            tkinter.messagebox.showinfo("Message Title" , delete(date, num))
+        else:
+            tkinter.messagebox.showerror("Invalid Input", "Please enter a valid date in YYYYMMDD format.")
 
     def validate_date(self, date_str):
         if len(date_str) == 8 and date_str.isdigit():
@@ -120,10 +134,10 @@ class StartPage(customtkinter.CTkFrame):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-    def sidebar_button_event(self):
-        print("Sidebar button clicked")
 class EnterPage(customtkinter.CTkFrame):
-    def __init__(self, master):
+    def __init__(self, master, date):
+        self.depositCounter = 0
+        self.expenseCounter = 0
         customtkinter.CTkFrame.__init__(self, master)
         # configure grid layout (2x1)
         self.grid_columnconfigure(0, weight=1)
@@ -146,7 +160,7 @@ class EnterPage(customtkinter.CTkFrame):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky = "ew")
         
         # Buttons above appearance mode section
-        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Exit", command=self.sidebar_button_event)
+        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Exit", command=self.quit)
         self.appearance_mode_button_1.grid(row=1, column=0, padx=20, pady=(50, 5))
 
         self.appearance_mode_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Go to Results", command=lambda: self.master.switch_frame(ResultPage))
@@ -170,7 +184,7 @@ class EnterPage(customtkinter.CTkFrame):
         self.depositCategory = ["Employment Income", "Self-Employment Income","Investment Income","Rental Income","Government Assistance","Other Income"]
         self.deposit_label = customtkinter.CTkLabel(self.deposit_input_frame, text="Deposit:                             ", font=("Arial", 40))
         self.deposit_label.grid(row=0, column=0, padx = 50, pady=(20,50), sticky="ew")
-        self.category_entry = customtkinter.CTkEntry(self.deposit_input_frame, placeholder_text="Category", font=("Arial", 40))
+        self.category_entry = customtkinter.CTkEntry(self.deposit_input_frame, placeholder_text="Sub-Category", font=("Arial", 40))
         self.category_entry.grid(row=1, column=0, padx=50, pady=(10,50), sticky="ew")
         self.value_entry = customtkinter.CTkEntry(self.deposit_input_frame, placeholder_text="0.00", font=("Arial", 40))
         self.value_entry.grid(row=2, column=0, padx=50, pady=(10,50), sticky="ew")
@@ -185,7 +199,7 @@ class EnterPage(customtkinter.CTkFrame):
         self.withdraw_label = customtkinter.CTkLabel(self.expense_input_frame, text="Withdraw:                             ", font=("Arial", 40))
         self.withdraw_label.grid(row=0, column=0, padx=50, pady=(20, 50), sticky="ew")
 
-        self.category_entry = customtkinter.CTkEntry(self.expense_input_frame, placeholder_text="Category", font=("Arial", 40))
+        self.category_entry = customtkinter.CTkEntry(self.expense_input_frame, placeholder_text="Sub-Category", font=("Arial", 40))
         self.category_entry.grid(row=1, column=0, padx=50, pady=(10,50), sticky="ew")
 
         self.value_entry = customtkinter.CTkEntry(self.expense_input_frame, placeholder_text="0.00", font=("Arial", 40))
@@ -194,34 +208,20 @@ class EnterPage(customtkinter.CTkFrame):
         self.selection_optionmenu = customtkinter.CTkOptionMenu(self.expense_input_frame, values=self.expensesCategory, font=("Arial", 40))
         self.selection_optionmenu.grid(row=3, column=0, padx=50, pady=(10, 105), sticky="ew")
 
-        self.delete_button = customtkinter.CTkButton(self.expense_input_frame, text="Submit Expense", command=self.delete_date, font=("Arial", 40))
+        self.delete_button = customtkinter.CTkButton(self.expense_input_frame, text="Submit Expense",  font=("Arial", 40))
         self.delete_button.grid(row=4, column=0, padx=50, pady=(30, 100), sticky="ew")
 
 
         # set default values
         self.appearance_mode_optionmenu.set("System")
         self.scaling_optionmenu.set("100%")
-    def submit_date(self):
-        date_value = self.deposit_entry.get()
-        if self.validate_date(date_value):
-            print("Date Submitted:", date_value)
-        else:
-            print("Invalid Date Format. Please enter date in YYYYMMDD format.")
+    def submitDeposit(self, date):
+        # STILL WORKING ON
+        pass
 
-    def delete_date(self):
-        self.date_entry.delete(0, tkinter.END)
-        print("Date Deleted")
-
-    def validate_date(self, date_str):
-        if len(date_str) == 8 and date_str.isdigit():
-            year = int(date_str[:4])
-            month = int(date_str[4:6])
-            day = int(date_str[6:])
-            if 1 <= month <= 12:
-                days_in_month = [31, 29 if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-                if 1 <= day <= days_in_month[month - 1]:
-                    return True
-        return False
+    def submitExpense(self, date):
+        # STILL WORKING ON
+        pass
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
@@ -256,9 +256,11 @@ class ResultPage(customtkinter.CTkFrame):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky = "ew")
         
         # Buttons above appearance mode section
-        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Exit", command=self.sidebar_button_event)
-        self.appearance_mode_button_1.grid(row=1, column=0, padx=20, pady=(50, 250))
+        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Exit", command=self.quit)
+        self.appearance_mode_button_1.grid(row=1, column=0, padx=20, pady=(50, 10))
 
+        self.appearance_mode_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Add Another Date", command=lambda: self.master.switch_frame(StartPage))
+        self.appearance_mode_button_1.grid(row=2, column=0, padx=20, pady=(10, 250))
 
         
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=("Arial", 16))
