@@ -11,7 +11,7 @@ MoneyMinder was developed using:
   - MacOS Executable Folder
   - Window Executable Folder (In Progess)
 2. Extract the contents of the folder (unzip it)
-3. Run the executable file to start the application
+3. Run the executable file that is in the folder to start the application
 ## Usage
 MoneyMinder allows you to:
 1. **Add Expenses and Deposits:** Track your financial activities by adding data categorized by type and date.
