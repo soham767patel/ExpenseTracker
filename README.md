@@ -25,6 +25,7 @@ If you'd like to contribute to MoneyMinder, please reach out to me directly.
 ## Project Vision
 I created MoneyMinder inspired by observing my parents gather receipts for every purchase but never compile the data for a comprehensive overview of their finances. My goal is to help people keep better track of their financial activities and gain valuable insights into their spending habits.
 ## Future Direction
+* **Build a testing module:** to test large data sets and how the code handles them in terms of run time
 * **Receipt Scanning:** Add a feature to read photos of receipts and convert them into meaningful data.
 * **Enhanced Visualization Options:** Provide a greater variety of viewing formats such as graphs, bars, pies, bullets, funnels, etc.
 * **Improved Documentation and Performance:** Refine documentation, optimize runtime, and enhance code style.
