@@ -234,6 +234,8 @@ class EnterPage(customtkinter.CTkFrame):
                 self.depositCounter+=1
                 self.value_entry.delete(0, tkinter.END)
                 self.category_entry.delete(0, tkinter.END)
+                self.value_entry2.delete(0, tkinter.END)
+                self.category_entry2.delete(0, tkinter.END)
                 tkinter.messagebox.showerror("Message title", f'Deposits Submited: {self.depositCounter}')
 
     def submitExpense(self, expense):
@@ -248,6 +250,8 @@ class EnterPage(customtkinter.CTkFrame):
         else:
             self.expense2 = withdraw(expense, category, source, value)
             self.expenseCounter+=1
+            self.value_entry.delete(0, tkinter.END)
+            self.category_entry.delete(0, tkinter.END)
             self.value_entry2.delete(0, tkinter.END)
             self.category_entry2.delete(0, tkinter.END)
             tkinter.messagebox.showerror("Message title", f'Withdraws Submited: {self.expenseCounter}')
