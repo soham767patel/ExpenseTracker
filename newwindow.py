@@ -3,7 +3,6 @@ import tkinter
 import tkinter.messagebox
 from dataCollection import (inputMode, is_float, is_alphabet, withdraw, deposit,
                              saveData, showDataDay, showDataMonth, showDataYear, delete)
-import datetime
 
 class SampleApp(customtkinter.CTk):
     def __init__(self):
@@ -345,4 +344,5 @@ class ResultPage(customtkinter.CTkFrame):
 
 if __name__ == "__main__":
     app = SampleApp()
+    app.update_idletasks()
     app.mainloop()
